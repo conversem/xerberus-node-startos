@@ -31,7 +31,7 @@ clean-manifest:
 rebranding:
 	@read -p "Enter new package ID name (must be a single word): " NEW_PKG_ID; \
 	read -p "Enter new package title: " NEW_PKG_TITLE; \
-	find . \( -name "*.md" -o -name ".gitignore" -o -name "manifest.yaml" -o -name "*Service.yml" \) -type f -not -path "./xerberus-node/*" -exec sed -i '' -e "s/xerberus-node/$$NEW_PKG_ID/g; s/Hello World/$$NEW_PKG_TITLE/g" {} +; \
+	find . \( -name "*.md" -o -name ".gitignore" -o -name "manifest.yaml" -o -name "*Service.yml" \) -type f -not -path "./xerberus-node/*" -exec sed -i '' -e "s/xerberus-node/$$NEW_PKG_ID/g; s/Xerberus Node/$$NEW_PKG_TITLE/g" {} +; \
 	echo; echo "Rebranding complete."; echo "	New package ID name is:	$$NEW_PKG_ID"; \
 	echo "	New package title is:	$$NEW_PKG_TITLE"; \
 	sed -i '' -e '/^# BEGIN REBRANDING/,/^# END REBRANDING/ s/^#*/#/' Makefile
@@ -53,7 +53,7 @@ docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),x86_64)
 else
 	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+	docker buildx build --progress=plain --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
 		--platform linux/arm64 \
 		--build-arg TARGETPLATFORM=linux/arm64 \
 		--build-arg ARCH=aarch64 \
@@ -64,7 +64,7 @@ docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),aarch64)
 else
 	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+	docker buildx build --progress=plain --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
 		--platform linux/amd64 \
 		--build-arg TARGETPLATFORM=linux/amd64 \
 		--build-arg ARCH=x86_64 \

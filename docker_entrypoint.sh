@@ -15,7 +15,6 @@ exec tini -- $XERBERUS_BIN \
     --base-path /root/data \
     --port 30333 \
     --rpc-port 9933 \
-    --ws-port 9944 \
     --prometheus-port 9615 \
     --rpc-cors all \
     --ws-external \
