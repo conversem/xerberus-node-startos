@@ -21,9 +21,9 @@ release-notes: |
 # The type of license for the project. Include the LICENSE in the root of the project directory. A license is required for a Start9 package.
 license: MIT
 # The repository URL for the package. This repo contains the manifest file (this), any scripts necessary for configuration, backups, actions, or health checks (more below). This key must exist. But could be embedded into the source repository. 
-wrapper-repo: "https://github.com/Start9Labs/hello-world-startos"
+wrapper-repo: "https://github.com/vremy/xerberus-node-startos"
 # The original project repository URL. There is no upstream repo in this example
-upstream-repo: "https://github.com/Start9Labs/hello-world"
+upstream-repo: "https://github.com/Start9Labs/xerberus-node"
 # URL to the support site / channel for the project. This key can be omitted if none exists, or it can link to the original project repository issues.
 support-site: "https://docs.start9.com/"
 # URL to the marketing site for the project. This key can be omitted if none exists, or it can link to the original project repository. 
@@ -144,7 +144,7 @@ backup:
     system: true 
     # The executable to run the command to begin the backup create process
     entrypoint: compat 
-    # Arguments to pass into the entrypoint executable. In this example, the full command run will be: `compat duplicity hello-world /mnt/backup /root/data`
+    # Arguments to pass into the entrypoint executable. In this example, the full command run will be: `compat duplicity xerberus-node /mnt/backup /root/data`
     args:
       - duplicity
       - create

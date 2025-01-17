@@ -31,7 +31,7 @@ clean-manifest:
 rebranding:
 	@read -p "Enter new package ID name (must be a single word): " NEW_PKG_ID; \
 	read -p "Enter new package title: " NEW_PKG_TITLE; \
-	find . \( -name "*.md" -o -name ".gitignore" -o -name "manifest.yaml" -o -name "*Service.yml" \) -type f -not -path "./hello-world/*" -exec sed -i '' -e "s/hello-world/$$NEW_PKG_ID/g; s/Hello World/$$NEW_PKG_TITLE/g" {} +; \
+	find . \( -name "*.md" -o -name ".gitignore" -o -name "manifest.yaml" -o -name "*Service.yml" \) -type f -not -path "./xerberus-node/*" -exec sed -i '' -e "s/xerberus-node/$$NEW_PKG_ID/g; s/Hello World/$$NEW_PKG_TITLE/g" {} +; \
 	echo; echo "Rebranding complete."; echo "	New package ID name is:	$$NEW_PKG_ID"; \
 	echo "	New package title is:	$$NEW_PKG_TITLE"; \
 	sed -i '' -e '/^# BEGIN REBRANDING/,/^# END REBRANDING/ s/^#*/#/' Makefile
@@ -49,18 +49,26 @@ x86:
 	@rm -f docker-images/aarch64.tar
 	ARCH=x86_64 $(MAKE)
 
-docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh hello-world/target/aarch64-unknown-linux-musl/release/hello-world
+docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),x86_64)
 else
 	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=aarch64 --platform=linux/arm64 -o type=docker,dest=docker-images/aarch64.tar .
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+		--platform linux/arm64 \
+		--build-arg TARGETPLATFORM=linux/arm64 \
+		--build-arg ARCH=aarch64 \
+		-o type=docker,dest=docker-images/aarch64.tar .
 endif
 
-docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh hello-world/target/x86_64-unknown-linux-musl/release/hello-world
+docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),aarch64)
 else
 	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=x86_64 --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar .
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+		--platform linux/amd64 \
+		--build-arg TARGETPLATFORM=linux/amd64 \
+		--build-arg ARCH=x86_64 \
+		-o type=docker,dest=docker-images/x86_64.tar .
 endif
 
 $(PKG_ID).s9pk: manifest.yaml instructions.md icon.png LICENSE scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar

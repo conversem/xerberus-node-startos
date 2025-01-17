@@ -1,13 +1,24 @@
 #!/bin/sh
 
-printf "\n\n [i] Starting Xerberus Node ...\n\n"
-exec tini /usr/bin/xerberus-net \
-  --base-path /data/nodes/testnet-node \
-  --chain /data/chain-spec.json \
-  --rpc-external \
-  --rpc-methods Unsafe \
-  --rpc-cors all \
-  --telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
-  --prometheus-external \
-  --no-private-ip \
-  --bootnodes /dns/node.xerberus.io/tcp/30334/ws/p2p/12D3KooWCYKbsQw2r5575MA8YqMhn8AqhVuZkfobPMyoKzEP595t/p2p/12D3KooWCYKbsQw2r5575MA8YqMhn8AqhVuZkfobPMyoKzEP595t
+# Find the xerberus binary
+XERBERUS_BIN=$(find / -name "xerberus*" -type f -executable 2>/dev/null | head -n 1)
+
+if [ -z "$XERBERUS_BIN" ]; then
+    echo "Error: Could not find xerberus binary"
+    exit 1
+fi
+
+# Use tini as init system
+exec tini -- $XERBERUS_BIN \
+    --name "StartOS Node" \
+    --chain xerberus \
+    --base-path /root/data \
+    --port 30333 \
+    --rpc-port 9933 \
+    --ws-port 9944 \
+    --prometheus-port 9615 \
+    --rpc-cors all \
+    --ws-external \
+    --rpc-external \
+    --rpc-methods Safe \
+    --pruning archive
