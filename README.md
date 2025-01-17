@@ -1,104 +1,124 @@
 <p align="center">
-  <img src="icon.png" alt="Project Logo" width="21%">
+  <img src="icon.png" alt="Xerberus Logo" width="21%">
 </p>
 
-# Hello World for StartOS
+# Xerberus Testnet Node for StartOS
 
-Hello World is a simple, minimal project that serves as a template for creating a service that runs on StartOS. This repository creates the `s9pk` package that is installed to run `xerberus-node` on [StartOS](https://github.com/Start9Labs/start-os/). Learn more about service packaging in the [Developer Docs](https://start9.com/latest/developer-docs/).
+Welcome to the Xerberus Testnet Node project, designed to run on StartOS. This repository provides the `s9pk` package necessary to deploy and operate the `xerberus-node` on [StartOS](https://github.com/Start9Labs/start-os/). For detailed insights into service packaging, refer to the [Developer Docs](https://docs.start9.com/latest/developer-docs/packaging).
 
 ## Dependencies
 
-Install the system dependencies below to build this project by following the instructions in the provided links. You can find instructions on how to set up the appropriate build environment in the [Developer Docs](https://docs.start9.com/latest/developer-docs/packaging).
+To build this project, you'll need to install the following system dependencies. Follow the provided links for installation instructions:
 
-- [docker](https://docs.docker.com/get-docker)
-- [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
+- [Docker](https://docs.docker.com/get-docker)
+- [Docker Buildx](https://docs.docker.com/buildx/working-with-buildx/)
 - [yq](https://mikefarah.gitbook.io/yq)
-- [deno](https://deno.land/)
-- [make](https://www.gnu.org/software/make/)
-- [start-sdk](https://github.com/Start9Labs/start-os/tree/sdk/)
+- [Deno](https://deno.land/)
+- [Make](https://www.gnu.org/software/make/)
+- [Start SDK](https://github.com/Start9Labs/start-os/tree/sdk/)
 
-## Build environment
-Prepare your StartOS build environment. In this example we are using Ubuntu 20.04.
-1. Install docker
-```
-curl -fsSL https://get.docker.com | bash
-sudo usermod -aG docker "$USER"
-exec sudo su -l $USER
-```
-2. Set buildx as the default builder
-```
-docker buildx install
-docker buildx create --use
-```
-3. Enable cross-arch emulated builds in docker
-```
-docker run --privileged --rm linuxkit/binfmt:v0.8
-```
-4. Install yq
-```
-sudo snap install yq
-```
-5. Install deno
-```
-sudo snap install deno
-```
-6. Install essentials build packages
-```
-sudo apt-get install -y build-essential openssl libssl-dev libc6-dev clang libclang-dev ca-certificates
-```
-7. Install Rust
-```
-curl https://sh.rustup.rs -sSf | sh
-# Choose nr 1 (default install)
-source $HOME/.cargo/env
-```
-8. Build and install start-sdk 
-```
-git clone https://github.com/Start9Labs/start-os.git && \
- cd start-os && git submodule update --init --recursive && \
- make sdk
-```
-Initialize sdk & verify install
-```
-start-sdk init
-start-sdk --version
-```
-Now you are ready to build the `xerberus-node` package!
+## Build Environment
+
+Set up your StartOS build environment. Here's an example for Ubuntu 20.04:
+
+1. **Install Docker**
+   ```bash
+   curl -fsSL https://get.docker.com | bash
+   sudo usermod -aG docker "$USER"
+   exec sudo su -l $USER
+   ```
+
+2. **Set Buildx as Default Builder**
+   ```bash
+   docker buildx install
+   docker buildx create --use
+   ```
+
+3. **Enable Cross-Architecture Emulated Builds**
+   ```bash
+   docker run --privileged --rm linuxkit/binfmt:v0.8
+   ```
+
+4. **Install yq**
+   ```bash
+   sudo snap install yq
+   ```
+
+5. **Install Deno**
+   ```bash
+   sudo snap install deno
+   ```
+
+6. **Install Build Essentials**
+   ```bash
+   sudo apt-get install -y build-essential openssl libssl-dev libc6-dev clang libclang-dev ca-certificates
+   ```
+
+7. **Install Rust**
+   ```bash
+   curl https://sh.rustup.rs -sSf | sh
+   # Choose option 1 for default install
+   source $HOME/.cargo/env
+   ```
+
+8. **Build and Install Start SDK**
+   ```bash
+   git clone https://github.com/Start9Labs/start-os.git && cd start-os && git submodule update --init --recursive
+   ```
+
+   Before running `make sdk`, update the `time` package:
+   ```bash
+   cargo update -p time --manifest-path=core/Cargo.toml
+   ```
+
+   Now, build the SDK:
+   ```bash
+   make sdk
+   ```
+
+   Initialize and verify the SDK installation:
+   ```bash
+   start-sdk init
+   start-sdk --version
+   ```
+
+Now, you're ready to build the `xerberus-node` package!
 
 ## Cloning
 
-Clone the project locally:
+Clone the project repository:
 
 ```
-git clone https://github.com/Start9Labs/xerberus-node-startos.git
+git clone https://github.com/your-username/xerberus-node-startos.git
 cd xerberus-node-startos
 git submodule update --init --recursive
 ```
 
 ## Building
 
-To build the `xerberus-node` package for all platforms using start-sdk, run the following command:
+To build the `xerberus-node` package for all supported platforms:
 
 ```
 make
 ```
 
-To build the `xerberus-node` package for a single platform using start-sdk, run:
+For a single platform:
 
-```
-# for amd64
-make x86
-```
-or
-```
-# for arm64
-make arm
-```
+- For **amd64**:
+  ```
+  make x86
+  ```
+
+- For **arm64**:
+  ```
+  make arm
+  ```
 
 ## Installing (on StartOS)
 
-Run the following commands to determine successful install:
-> :information_source: Change server-name.local to your Start9 server address
+To install the package on your StartOS instance:
+
+> :information_source: Replace `server-name.local` with your Start9 server's address.
 
 ```
 start-cli auth login
@@ -106,16 +126,16 @@ start-cli auth login
 start-cli --host https://server-name.local package install xerberus-node.s9pk
 ```
 
-If you already have your `start-cli` config file setup with a default `host`, you can install simply by running:
+If your `start-cli` configuration file has a default host set, you can simplify the installation to:
 
 ```
 make install
 ```
 
-> **Tip:** You can also install the xerberus-node.s9pk using **Sideload Service** under the **System > Manage** section.
+**Tip:** Alternatively, you can install the `xerberus-node.s9pk` using the **Sideload Service** feature under **System > Manage**.
 
-### Verify Install
+### Verify Installation
 
-Go to your StartOS Services page, select **Hello World**, configure and start the service. Then, verify its interfaces are accessible.
+After installation, navigate to the StartOS Services page, select **Xerberus Testnet Node**, configure, and start the service. Ensure that all interfaces are accessible as per the service's documentation.
 
-**Done!** 
+**Congratulations!** You've successfully installed the Xerberus Testnet Node on StartOS. 
