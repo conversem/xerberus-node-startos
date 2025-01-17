@@ -53,7 +53,7 @@ docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),x86_64)
 else
 	mkdir -p docker-images
-	docker buildx build --progress=plain --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
 		--platform linux/arm64 \
 		--build-arg TARGETPLATFORM=linux/arm64 \
 		--build-arg ARCH=aarch64 \
@@ -64,7 +64,7 @@ docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),aarch64)
 else
 	mkdir -p docker-images
-	docker buildx build --progress=plain --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) \
 		--platform linux/amd64 \
 		--build-arg TARGETPLATFORM=linux/amd64 \
 		--build-arg ARCH=x86_64 \

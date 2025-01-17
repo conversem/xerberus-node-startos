@@ -10,7 +10,7 @@ fi
 
 # Use tini as init system
 exec tini -- $XERBERUS_BIN \
-    --name "StartOS Node" \
+    --name "Xerberus Testnet Node" \
     --chain xerberus \
     --base-path /root/data \
     --port 30333 \
